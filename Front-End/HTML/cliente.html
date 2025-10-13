@@ -8,52 +8,64 @@
     <link rel="stylesheet" href="../CSS/estilos.css">
 </head>
 <body>
-    <header>
-        <h1>SABOR AZTECA</h1>
-        <img src="../IMG/Logo.png" alt="Logo">
-    </header>
 
-    <nav>
-        <img id="menuBtn" src="../IMG/menu.png" alt="menu">
-    </nav>
+    <p id="cedula" class="oculto"></p>
+    <p id="tipoDescuento" class="oculto"></p>
+    <p id="descuentoTacos" class="oculto"></p>
 
-    <div id="menuLateral" class="menu-lateral">
-        <button id="cerrarBtn" class="cerrar">&times;</button>
-        <ul>
-            <li><h1>Main dishes</h1></li>
-            <li><h1>Side Disshes</h1></li>
-            <li><h1>Drinks</h1></li>
-            <li><h1>Desserts</h1></li>
+    <main id="mains">
+        <header id="clienteH">
+            <h1 id="titleH">SABOR AZTECA</h1>
+            <img src="../IMG/Logo.png" alt="Logo" id="Logo">
+        </header>
+    
+        <nav id="clientN">
+            <img src="../IMG/menu.png" alt="menu" id="menuN" onclick="abrirModal()">
+        </nav>
+        
+        <main id="menuDish">
+            <div id="Main-dishes">
+                <h1>Hello Main-dishes</h1>
+            </div>
+    
+            <div id="Side-Disshes" class="oculto">
+                <h1>Hello Side-Disshes</h1>
+            </div>
+    
+            <div id="Drinks" class="oculto">
+                <h1>Hello Drinks</h1>
+            </div>
+    
+            <div id="Desserts" class="oculto">
+                <h1>Hello Desserts</h1>
+            </div>
+        </main>
+    
+        <main id="buyDish">
+            <h1>helloo</h1>
+        </main>
+    
+        <footer id="clienteF">
+            <main onclick="mainMenuDish()">
+                <img id="menuTabsBtn" src="../IMG/menu-tabs.png" alt="Menu Tabs">
+            </main>
+            <main onclick="mainBuyDish()">
+                <img id="basketBtn" src="../IMG/shopping-basket.png" alt="Shopping Basket">
+            </main>
+        </footer>
+    </main>
+
+    <div id="menuLateral" class="oculto">
+        <button id="cerrarBtn" onclick="cerrarModal()">&times;</button>
+        <ul id="lista">
+            <li><h1 id="espList" onclick="mostrarMainDishes()">Main dishes</h1></li>
+            <li><h1 id="espList" onclick="mostrarSideDisshes()">Side Disshes</h1></li>
+            <li><h1 id="espList" onclick="mostrarDrinks()">Drinks</h1></li>
+            <li><h1 id="espList" onclick="mostrarDesserts()">Desserts</h1></li>
         </ul>
     </div>
 
-    <main id="menuDish">
-        <div id="Main-dishes" class="dish-section">
-            <h1>Hello Main-dishes</h1>
-        </div>
-
-        <div id="Side-Disshes" class="dish-section">
-            <h1>Hello Side-Disshes</h1>
-        </div>
-
-        <div id="Drinks" class="dish-section">
-            <h1>Hello Drinks</h1>
-        </div>
-
-        <div id="Desserts" class="dish-section">
-            <h1>Hello Desserts</h1>
-        </div>
-    </main>
-
-    <main id="buyDish" style="display: none;">
-        <h1>hello</h1>
-    </main>
-
-    <footer>
-        <main><img id="menuTabsBtn" src="../IMG/menu-tabs.png" alt="Menu Tabs"></main>
-        <main><img id="basketBtn" src="../IMG/shopping-basket.png" alt="Shopping Basket"></main>
-    </footer>
-
+    <script src="../JS/verificarInicioSesion.js"></script>
     <script src="../JS/funciones.js"></script>
 </body>
 </html>

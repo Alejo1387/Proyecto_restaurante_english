@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mexican Foot</title>
+    <link rel="shortcut icon" href="../IMG/Logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../CSS/estilos.css">
+</head>
+<body>
+    <!-- Panel de Inicio de Sesión -->
+    <div id="loginPanel">
+        <div id="loginBox">
+            <img src="../IMG/Logo.png" alt="Logo" id="loginLogo">
+            <h1>Bienvenido a SABOR AZTECA</h1>
+
+            <input type="text" id="loginNombre" placeholder="Nombre">
+            <input type="number" id="loginCedula" placeholder="Número de cédula">
+            <input type="number" id="loginMesa" placeholder="Número de mesa" max="999" min="0">
+
+            <button id="btnLogin" onclick="iniciarSesion()">Entrar</button>
+            <p id="loginError"></p>
+        </div>
+    </div>
+
+    <script src="../JS/funciones.js"></script>
+</body>
+</html>

@@ -4,3 +4,167 @@
     box-sizing: border-box;
     cursor: url(../IMG/pointer.png), auto;
 }
+
+/* ========== INICIO DE SESION ========== */
+/* ===== LOGIN SUPERPUESTO ===== */
+#loginPanel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(12, 53, 75, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000; /* por encima de todo */
+}
+
+#loginBox {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 35px;
+  width: 90%;
+  max-width: 330px;
+  text-align: center;
+  color: white;
+  backdrop-filter: blur(6px);
+}
+
+#loginLogo {
+  width: 150px;
+  margin-bottom: 15px;
+}
+
+#loginBox input {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  text-align: center;
+  font-size: 16px;
+}
+
+#btnLogin {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: rgb(119, 64, 7);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 100%;
+}
+
+#btnLogin:hover {
+  background-color: rgb(177, 175, 163);
+}
+
+#loginError {
+  color: white;
+  margin-top: 10px;
+}
+
+/* Ocultar panel */
+.oculto {
+  display: none !important;
+}
+
+
+/* ========== SESION DEL CLIENTE ========== */
+#buyDish, .oculto {
+    display: none;
+}
+
+/* Panel del header */
+#clienteH {
+    background-color: red;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+}
+#clienteH #titleH {
+    margin-top: 20px;
+}
+
+#clienteH #Logo {
+    width: 100px;
+}
+
+/* Panel del Nav */
+#clientN {
+    background-color: green;
+    padding: 5px;
+    display: flex;
+    justify-content: end;
+}
+
+#clientN #menuN {
+    width: 65px;
+}
+
+/* Mostrar el Menu */
+#menuLateral {
+    background-color: rgba(12, 53, 75, 0.97);
+    padding: 10px;
+    padding-bottom: 30px;
+}
+#menuLateral #lista {
+    display: block;
+    justify-items: center;
+    list-style: none;
+    color: white;
+    padding: 10px;
+}
+#menuLateral #cerrarBtn {
+    font-size: 40px;
+    color: white;
+    background: none;
+    margin: 10px 0 10px 300px;
+    padding: 12px 20px;
+    border: none;
+    cursor: pointer;
+}
+#menuLateral #espList {
+    margin: 10px;
+}
+
+/* Panel Mains */
+#mains {
+    position: relative;
+    z-index: 1;
+}
+
+/* Para opacar los paneles */
+.panel-opaco {
+    opacity: 0.3;
+}
+
+
+
+/* Panel del Footer */
+#clienteF {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgb(12, 53, 75);
+    padding: 10px 0;
+    z-index: 1000;
+}
+
+#clienteF #menuTabsBtn, #clienteF #basketBtn {
+    width: 50px;
+    cursor: pointer;
+}
+
+#clienteF #menuTabsBtn:hover, #clienteF #basketBtn:hover {
+    background-color: rgb(12, 119, 171);
+}
