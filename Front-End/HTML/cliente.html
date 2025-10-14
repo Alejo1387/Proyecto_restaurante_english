@@ -20,30 +20,33 @@
         </header>
     
         <nav id="clientN">
+            <h1 id="nomUsu"></h1>
             <img src="../IMG/menu.png" alt="menu" id="menuN" onclick="abrirModal()">
         </nav>
         
         <main id="menuDish">
             <div id="Main-dishes">
-                <h1>Hello Main-dishes</h1>
+                <h1 style="color: black; text-align: center;">🍽️ Main Dishes</h1>
+                <div id="contenedorMainDishes"></div>
             </div>
     
             <div id="Side-Disshes" class="oculto">
-                <h1>Hello Side-Disshes</h1>
+                <h1 style="color: black; text-align: center;">🥗 Side Dishes</h1>
+                <div id="contenedorSideDishes"></div>
             </div>
     
             <div id="Drinks" class="oculto">
-                <h1>Hello Drinks</h1>
+                <h1 style="color: black; text-align: center;">🍹 Drinks</h1>
+                <div id="contenedorDrinks"></div>
             </div>
     
             <div id="Desserts" class="oculto">
-                <h1>Hello Desserts</h1>
+                <h1 style="color: black; text-align: center;">🍰 Desserts</h1>
+                <div id="contenedorDesserts"></div>
             </div>
         </main>
     
-        <main id="buyDish">
-            <h1>helloo</h1>
-        </main>
+        <main id="buyDish"></main>
     
         <footer id="clienteF">
             <main onclick="mainMenuDish()">
@@ -55,15 +58,17 @@
         </footer>
     </main>
 
-    <div id="menuLateral" class="oculto">
-        <button id="cerrarBtn" onclick="cerrarModal()">&times;</button>
-        <ul id="lista">
-            <li><h1 id="espList" onclick="mostrarMainDishes()">Main dishes</h1></li>
-            <li><h1 id="espList" onclick="mostrarSideDisshes()">Side Disshes</h1></li>
-            <li><h1 id="espList" onclick="mostrarDrinks()">Drinks</h1></li>
-            <li><h1 id="espList" onclick="mostrarDesserts()">Desserts</h1></li>
-        </ul>
-    </div>
+    <main id="mains2">
+        <div id="menuLateral" class="oculto">
+            <button id="cerrarBtn" onclick="cerrarModal()">&times;</button>
+            <ul id="lista">
+                <li><h1 id="espList" onclick="mostrarMainDishes()">Main dishes</h1></li>
+                <li><h1 id="espList" onclick="mostrarSideDisshes()">Side Disshes</h1></li>
+                <li><h1 id="espList" onclick="mostrarDrinks()">Drinks</h1></li>
+                <li><h1 id="espList" onclick="mostrarDesserts()">Desserts</h1></li>
+            </ul>
+        </div>
+    </main>
 
     <script src="../JS/verificarInicioSesion.js"></script>
     <script src="../JS/funciones.js"></script>

@@ -30,6 +30,7 @@ function iniciarSesion() {
 
                 localStorage.setItem("cedula", cedula);
                 localStorage.setItem("tipoDescuento", descuento);
+                localStorage.setItem("nombre", nombre);
                 window.location.href = "../HTML/cliente.html";
             }
         })
@@ -47,13 +48,32 @@ function iniciarSesion() {
 // Mostrar main menuDish
 function mainMenuDish() {
     document.getElementById('buyDish').style.display = 'none';
-    document.getElementById('menuDish').style.display = 'flex';
+    document.getElementById('menuDish').style.display = 'grid';
 }
 
 // Mostrar main buyDish
 function mainBuyDish() {
     document.getElementById('buyDish').style.display = 'flex';
     document.getElementById('menuDish').style.display = 'none';
+
+    const cedula = localStorage.getItem("cedula");
+
+    const formdata = new FormData();
+    formdata.append('funcion', 'carrito');
+    formdata.append('cedula', cedula)
+
+    fetch ('../../Back-End/APIS/APIs.php', {
+        method: "POST",
+        body: formdata
+    })
+    .then(res => res.json())
+    .then(data => {
+        mostrarCarrito(data)
+    })
+    .catch(err => {
+        console.error("Error al enviar el formulario:", err);
+        alert("❌ Error inesperado al enviar el formulario.");
+    });
 }
 
 // Mostrar MENU
@@ -78,7 +98,8 @@ function mostrarMainDishes() {
     document.getElementById('Desserts').classList.add('oculto');
 
     cerrarModal();
-    mainMenuDish()
+    mainMenuDish();
+    cargarProductos('Main-dishes');
 }
 
 // Funcion mostrar Side-Disshes
@@ -89,7 +110,8 @@ function mostrarSideDisshes() {
     document.getElementById('Desserts').classList.add('oculto');
 
     cerrarModal();
-    mainMenuDish()
+    mainMenuDish();
+    cargarProductos('Side-Disshes');
 }
 
 // Function mostrar Drinks
@@ -100,7 +122,8 @@ function mostrarDrinks() {
     document.getElementById('Desserts').classList.add('oculto');
 
     cerrarModal();
-    mainMenuDish()
+    mainMenuDish();
+    cargarProductos('Drinks');
 }
 
 // Function mostrar Desserts
@@ -111,5 +134,241 @@ function mostrarDesserts() {
     document.getElementById('Desserts').classList.remove('oculto');
 
     cerrarModal();
-    mainMenuDish()
+    mainMenuDish();
+    cargarProductos('Desserts');
 }
+
+
+
+
+// ============================== Funciones para mostrar las comidas y añadir al carrito ==============================
+
+// Para cargar las categorias
+function cargarProductos(categoria) {
+    const formdata = new FormData();
+    formdata.append('funcion', 'cargarProductos')
+    formdata.append('categoriaa', categoria)
+
+    fetch ('../../Back-End/APIS/APIs.php', {
+        method: "POST",
+        body: formdata
+    })
+    .then(res => res.json())
+    .then(data => {
+        const error = data.errores;
+
+        if (error && error.length > 0) {
+            alert("Error: " + error[0]);
+        } else {
+            mostrarTarjetas(data, categoria);
+        }
+    })
+    .catch(err => {
+        console.error("Error al enviar el formulario:", err);
+        alert("❌ Error inesperado al enviar el formulario.");
+    });
+}
+
+function mostrarTarjetas(productos, contenedorF) {
+    let contenedor = null;
+
+    if (contenedorF === 'Main-dishes') {
+        contenedor = document.getElementById('contenedorMainDishes');
+    } else if (contenedorF === 'Side-Disshes') {
+        contenedor = document.getElementById('contenedorSideDishes');
+    } else if (contenedorF === 'Drinks') {
+        contenedor = document.getElementById('contenedorDrinks');
+    } else if (contenedorF === 'Desserts') {
+        contenedor = document.getElementById('contenedorDesserts');
+    }
+
+    contenedor.innerHTML = '';
+
+    productos.forEach(prod => {
+        const tarjeta = document.createElement('div');
+        tarjeta.classList.add('tarjeta');
+
+        tarjeta.innerHTML = `
+            <img src="../IMG/${prod.foto}" alt="${prod.nombre}" class="imgProducto">
+            <h2>${prod.nombre}</h2>
+            <p>${prod.descripcion}</p>
+            <p><strong>$${prod.precio}</strong></p>
+            <div class="cantidad">
+                <button class="btnMenos">-</button>
+                <span class="numCant">1</span>
+                <button class="btnMas">+</button>
+            </div>
+            <button class="btnAgregar">Añadir al carrito</button>
+        `;
+
+        // lógica cantidad
+        let numCant = tarjeta.querySelector('.numCant');
+        tarjeta.querySelector('.btnMas').onclick = () => {
+            numCant.textContent = parseInt(numCant.textContent) + 1;
+        };
+        tarjeta.querySelector('.btnMenos').onclick = () => {
+            let actual = parseInt(numCant.textContent);
+            if (actual > 1) numCant.textContent = actual - 1;
+        };
+
+        // botón agregar
+        tarjeta.querySelector('.btnAgregar').onclick = () => {
+            const cantidad = numCant.textContent;
+            insertarPedido(prod.id, cantidad, productos, contenedorF);
+        };
+
+        contenedor.appendChild(tarjeta);
+    });
+}
+
+function insertarPedido(id_producto, cantidad, productos, contenedorF) {
+    const cedula = localStorage.getItem("cedula");
+
+    const formdata = new FormData();
+    formdata.append('funcion', 'agregarCarrito');
+    formdata.append('id_producto', id_producto);
+    formdata.append('cedula', cedula);
+    formdata.append('cantidad', cantidad)
+
+    fetch ('../../Back-End/APIS/APIs.php', {
+        method: "POST",
+        body: formdata
+    })
+    .then(res => res.json())
+    .then(() => {
+        alert("Pedido añadido al carrito.");
+        mostrarTarjetas(productos, contenedorF);
+    })
+    .catch(err => {
+        console.error("Error al enviar el formulario:", err);
+        alert("❌ Error inesperado al enviar el formulario.");
+    });
+}
+
+function mostrarCarrito(productos) {
+    const contenedor = document.getElementById("buyDish");
+    contenedor.innerHTML = '';
+
+    productos.forEach(prod => {
+        const tarjeta = document.createElement('div');
+        tarjeta.classList.add('tarjeta');
+
+        if (prod.estado === "Mirando") {
+            tarjeta.innerHTML = `
+                <img src="../IMG/${prod.foto}" alt="${prod.nombre}" class="imgProducto">
+                <h2>${prod.nombre}</h2>
+                <p><strong>$${prod.precio}</strong></p>
+                <div class="cantidad">
+                    <button class="btnMenos">-</button>
+                    <span class="numCant">${prod.cantidad}</span>
+                    <button class="btnMas">+</button>
+                </div>
+                <button class="btnAgregar confirmarPedido">Confirmar Pedido</button>
+                <button class="btnAgregar eliminarPedido">Eliminar Pedido</button>
+            `;
+            // lógica cantidad
+            let numCant = tarjeta.querySelector('.numCant');
+            tarjeta.querySelector('.btnMas').onclick = () => {
+                numCant.textContent = parseInt(numCant.textContent) + 1;
+            };
+            tarjeta.querySelector('.btnMenos').onclick = () => {
+                let actual = parseInt(numCant.textContent);
+                if (actual > 1) numCant.textContent = actual - 1;
+            };
+            tarjeta.querySelector('.eliminarPedido').onclick = () => {
+                eliminarPedido(prod.id_pedido);
+            };
+
+            tarjeta.querySelector('.confirmarPedido').onclick = () => {
+                confirmarPedido(parseInt(numCant.textContent), prod.id_pedido);
+            };
+
+        } else {
+            switch (prod.proceso){
+                case 'Pendiente':
+                    tarjeta.innerHTML = `
+                        <img src="../IMG/${prod.foto}" alt="${prod.nombre}" class="imgProducto">
+                        <h2>${prod.nombre}</h2>
+                        <p><strong>$${prod.precio}</strong></p>
+                        <div class="cantidad">
+                            <span class="numCant">${prod.cantidad}</span>
+                        </div>
+                        <span class="pendiente">${prod.proceso}</span>
+                    `;
+                    break;
+                case 'Preparando':
+                    tarjeta.innerHTML = `
+                        <img src="../IMG/${prod.foto}" alt="${prod.nombre}" class="imgProducto">
+                        <h2>${prod.nombre}</h2>
+                        <p><strong>$${prod.precio}</strong></p>
+                        <div class="cantidad">
+                            <span class="numCant">${prod.cantidad}</span>
+                        </div>
+                        <span class="preparando">${prod.proceso}</span>
+                    `;
+                    break;
+                case 'Entregado':
+                    tarjeta.innerHTML = `
+                        <img src="../IMG/${prod.foto}" alt="${prod.nombre}" class="imgProducto">
+                        <h2>${prod.nombre}</h2>
+                        <p><strong>$${prod.precio}</strong></p>
+                        <div class="cantidad">
+                            <span class="numCant">${prod.cantidad}</span>
+                        </div>
+                        <span class="entregado">${prod.proceso}</span>
+                    `;
+                    break;
+            }
+        }
+
+        contenedor.appendChild(tarjeta);
+    })
+}
+
+function eliminarPedido(id_pedido) {
+    const formdata = new FormData();
+    formdata.append('funcion', 'eliminarPedido');
+    formdata.append('id_pedido', id_pedido)
+
+    fetch ('../../Back-End/APIS/APIs.php', {
+        method: "POST",
+        body: formdata
+    })
+    .then(res => res.json())
+    .then(() => {
+        mainBuyDish();
+        alert("Pedido Eliminado.");
+    })
+    .catch(err => {
+        console.error("Error al enviar el formulario:", err);
+        alert("❌ Error inesperado al enviar el formulario.");
+    });
+}
+
+function confirmarPedido(numeroPedido, id_pedido) {
+    const formdata = new FormData();
+    formdata.append('funcion', 'confirmarPedido');
+    formdata.append('id_pedido', id_pedido)
+    formdata.append('numPed', numeroPedido)
+
+    fetch ('../../Back-End/APIS/APIs.php', {
+        method: "POST",
+        body: formdata
+    })
+    .then(res => res.json())
+    .then(() => {
+        mainBuyDish();
+        alert("Pedido Confirmado!");
+    })
+    .catch(err => {
+        console.error("Error al enviar el formulario:", err);
+        alert("❌ Error inesperado al enviar el formulario.");
+    });
+}
+
+// Cuando cargue la página de cliente.html
+document.addEventListener('DOMContentLoaded', () => {
+    mainBuyDish();
+    cargarProductos('Main-dishes');
+    mainMenuDish();
+});
