@@ -157,6 +157,98 @@
                 }
                 break;
 
+            case 'obtenerPedidosHoyPorTodos':
+                $fecha = $_POST['fecha'] ?? null;
+                if (!$fecha) {
+                    echo json_encode(['success' => false, 'error' => 'Falta fecha.']);
+                    break;
+                }
+
+                try {
+                    $sql = "SELECT 
+                                u.cedula,
+                                u.nombre AS nombre_usuario,
+                                u.mesa,
+                                ped.id AS id_pedido,
+                                ped.estado,
+                                ped.proceso,
+                                ped.fecha_pedido,
+                                p.id AS id_producto,
+                                p.nombre AS nombre_producto,
+                                p.ingrediente,
+                                p.categoria,
+                                p.precio AS precio_str,
+                                ped.cantidad AS cantidad_str
+                            FROM pedidos ped
+                            JOIN usuarios u ON ped.id_usuario = u.cedula
+                            JOIN productos p ON ped.id_producto = p.id
+                            WHERE DATE(ped.fecha_pedido) = ?
+                            AND ped.proceso IN ('Pendiente', 'Preparando', 'Entregado')
+                            ORDER BY u.mesa, ped.fecha_pedido;";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$fecha]);
+                    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    // Agrupar por usuario (cedula) y calcular subtotales y totales
+                    $usuarios = [];
+                    foreach ($rows as $r) {
+                        $cedula = $r['cedula'];
+                        // Normalizar precio y cantidad (quitar símbolos no numéricos)
+                        $precio = floatval(preg_replace('/[^\d.,-]/', '', $r['precio_str']));
+                        // Reemplazar coma decimal por punto si existe
+                        $precio = floatval(str_replace(',', '.', strval($precio)));
+                        $cantidad = intval(preg_replace('/\D/', '', $r['cantidad_str']));
+
+                        $subtotal = $precio * $cantidad;
+
+                        if (!isset($usuarios[$cedula])) {
+                            $usuarios[$cedula] = [
+                                'cedula' => $cedula,
+                                'nombre_usuario' => $r['nombre_usuario'],
+                                'mesa' => $r['mesa'],
+                                'pedidos' => [],
+                                'total' => 0
+                            ];
+                        }
+
+                        $usuarios[$cedula]['pedidos'][] = [
+                            'id_pedido' => $r['id_pedido'],
+                            'id_producto' => $r['id_producto'],
+                            'nombre_producto' => $r['nombre_producto'],
+                            'ingrediente' => $r['ingrediente'],
+                            'categoria' => $r['categoria'],
+                            'precio' => $precio,
+                            'cantidad' => $cantidad,
+                            'subtotal' => $subtotal,
+                            'proceso' => $r['proceso'],
+                            'estado' => $r['estado'],
+                            'fecha_pedido' => $r['fecha_pedido']
+                        ];
+
+                        $usuarios[$cedula]['total'] += $subtotal;
+                    }
+
+                    echo json_encode(['success' => true, 'usuarios' => array_values($usuarios)]);
+                } catch (Exception $e) {
+                    // opcional: loguear $e->getMessage()
+                    echo json_encode(['success' => false, 'error' => 'Error interno al obtener pedidos.']);
+                }
+                break;
+
+            case 'actualizarEstadoPedido':
+                $id_pedido = $_POST['id_pedido'];
+                $nuevo_estado = $_POST['nuevo_estado'];
+
+                try {
+                    $sql = "UPDATE pedidos SET proceso = ? WHERE id = ?";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$nuevo_estado, $id_pedido]);
+                    echo json_encode(['success' => true]);
+                } catch (Exception $e) {
+                    echo json_encode(['success' => false, 'error' => 'Error al actualizar el estado']);
+                }
+                break;
+
             default:
                 echo json_encode("Error");
         }

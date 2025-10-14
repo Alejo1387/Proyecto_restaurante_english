@@ -366,9 +366,135 @@ function confirmarPedido(numeroPedido, id_pedido) {
     });
 }
 
+function cargarPedidosHoyTodos() {
+  const fecha = new Date().toISOString().split('T')[0];
+  const form = new FormData();
+  form.append('funcion', 'obtenerPedidosHoyPorTodos');
+  form.append('fecha', fecha);
+
+  fetch('../../Back-End/APIS/APIs.php', {
+    method: 'POST',
+    body: form
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      console.error(data.error || 'Error al obtener datos');
+      document.getElementById('pedidosContainer').innerHTML = '<p>Error al cargar pedidos.</p>';
+      return;
+    }
+    renderTarjetasUsuarios(data.usuarios);
+  })
+  .catch(err => {
+    console.error('Fetch error:', err);
+    document.getElementById('pedidosContainer').innerHTML = '<p>Error de conexión.</p>';
+  });
+}
+
+function formatoPesos(n) {
+  return Number(n).toLocaleString('es-CO');
+}
+
+function renderTarjetasUsuarios(usuarios) {
+  const contPendientes = document.getElementById('pedidosContainer');
+  const contEntregados = document.getElementById('pedidosEntregados');
+
+  contPendientes.innerHTML = '';
+  contEntregados.innerHTML = '';
+
+  if (!usuarios || usuarios.length === 0) {
+    contPendientes.innerHTML = '<p>No hay pedidos pendientes o preparando hoy.</p>';
+    return;
+  }
+
+  usuarios.forEach(u => {
+    const card = document.createElement('div');
+    card.className = 'tarjetaUsuario';
+
+    let html = `
+      <div class="headerUsuario">
+        <h3>${u.nombre_usuario}</h3>
+        <span class="mesa">Mesa ${u.mesa}</span>
+        <span class="totalUsuario">Total: $${formatoPesos(u.total)}</span>
+      </div>
+      <div class="listaProductos">
+    `;
+
+    u.pedidos.forEach(p => {
+      // Asignar color segun estado
+      const claseColor =
+        p.proceso === 'Pendiente' ? 'estado-pendiente' :
+        p.proceso === 'Preparando' ? 'estado-preparando' :
+        'estado-entregado';
+
+      html += `
+        <div class="itemProducto">
+          <div class="productoNombre">${p.nombre_producto}</div>
+          <div class="productoMeta">
+            <span class="cantidad">x${p.cantidad}</span>
+            <span class="subtotal">$${formatoPesos(p.subtotal)}</span>
+          </div>
+          <div class="productoInfo">
+            <small>${p.categoria} · ${p.ingrediente || ''}</small>
+            <select class="estadoSelect ${claseColor}" data-id="${p.id_pedido}">
+              <option value="Pendiente" ${p.proceso === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
+              <option value="Preparando" ${p.proceso === 'Preparando' ? 'selected' : ''}>Preparando</option>
+              <option value="Entregado" ${p.proceso === 'Entregado' ? 'selected' : ''}>Entregado</option>
+            </select>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+    card.innerHTML = html;
+
+    // Verificar si el usuario tiene algún pedido Entregado
+    const todosEntregados = u.pedidos.every(p => p.proceso === 'Entregado');
+    if (todosEntregados) {
+      contEntregados.appendChild(card);
+    } else {
+      contPendientes.appendChild(card);
+    }
+  });
+
+  // Escuchar cambios de estado
+  document.querySelectorAll('.estadoSelect').forEach(select => {
+    select.addEventListener('change', e => {
+      const idPedido = e.target.getAttribute('data-id');
+      const nuevoEstado = e.target.value;
+      actualizarEstadoPedido(idPedido, nuevoEstado);
+    });
+  });
+}
+
+function actualizarEstadoPedido(idPedido, nuevoEstado) {
+  const form = new FormData();
+  form.append('funcion', 'actualizarEstadoPedido');
+  form.append('id_pedido', idPedido);
+  form.append('nuevo_estado', nuevoEstado);
+
+  fetch('../../Back-End/APIS/APIs.php', {
+    method: 'POST',
+    body: form
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      console.log(`✅ Pedido ${idPedido} actualizado a ${nuevoEstado}`);
+      cargarPedidosHoyTodos(); // refrescar todo para mover a entregados si aplica
+    } else {
+      console.error('❌ Error al actualizar estado:', data.error);
+    }
+  })
+  .catch(err => console.error('❌ Error en fetch:', err));
+}
+
+
 // Cuando cargue la página de cliente.html
-document.addEventListener('DOMContentLoaded', () => {
-    mainBuyDish();
-    cargarProductos('Main-dishes');
-    mainMenuDish();
-});
+// document.addEventListener('DOMContentLoaded', () => {
+//     mainBuyDish();
+//     cargarProductos('Main-dishes');
+//     mainMenuDish();
+//     cargarPedidosHoyTodos();
+// });

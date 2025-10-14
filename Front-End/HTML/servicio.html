@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mexican Foot</title>
+    <link rel="shortcut icon" href="../IMG/Logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../CSS/estilos.css">
+</head>
+<body>
+    <header id="clienteH">
+        <h1 id="titleH">SABOR AZTECA</h1>
+        <img src="../IMG/Logo.png" alt="Logo" id="Logo">
+    </header>
+
+    <div id="pedidosContainer"></div>
+
+    <h2 style="text-align:center; margin-top:40px;">Pedidos Entregados</h2>
+    <div id="pedidosEntregados"></div>
+
+    <script src="../JS/funciones.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarPedidosHoyTodos();
+        })
+    </script>
+</body>
+</html>

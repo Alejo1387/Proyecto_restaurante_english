@@ -379,3 +379,122 @@
     width: 90%;
   }
 }
+
+
+
+
+
+
+#pedidosContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start;
+  padding: 12px;
+}
+
+.tarjetaUsuario {
+  width: 320px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border: 1px solid #e6e6e6;
+}
+
+.headerUsuario {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.headerUsuario h3 { margin: 0; font-size: 1.05rem; color:#0c354b; }
+.headerUsuario .mesa { font-size: 0.95rem; color:#333; }
+.headerUsuario .totalUsuario { font-weight:700; color:#0a7a3f; }
+
+.listaProductos { margin-top:8px; }
+.itemProducto { padding:8px 6px; border-bottom:1px solid #f0f0f0; }
+.itemProducto:last-child { border-bottom: none; }
+.productoNombre { font-weight:600; }
+.productoMeta { display:flex; justify-content:space-between; font-size:0.95rem; margin-top:4px; }
+.productoInfo { display:flex; justify-content:space-between; font-size:0.8rem; color:#666; margin-top:6px; }
+
+#pedidosContainer, #pedidosEntregados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.tarjetaUsuario {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  padding: 20px;
+  width: 340px;
+  font-family: 'Segoe UI', sans-serif;
+  transition: transform 0.2s ease;
+}
+
+.tarjetaUsuario:hover {
+  transform: scale(1.02);
+}
+
+.tarjetaUsuario h3 {
+  font-size: 1.3em;
+  color: #0c354b;
+  margin-bottom: 5px;
+}
+
+.tarjetaUsuario p {
+  font-size: 1.1em;
+  margin: 4px 0;
+}
+
+.tarjetaUsuario ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+
+.tarjetaUsuario li {
+  border-bottom: 1px solid #ccc;
+  padding: 8px 0;
+  font-size: 1.05em;
+}
+
+.estadoSelect {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.estado-pendiente {
+  background: #c0392b;
+  color: white;
+}
+
+.estado-preparando {
+  background: #f1c40f;
+  color: black;
+}
+
+.estado-entregado {
+  background: #27ae60;
+  color: white;
+}
+
+.totalPedido {
+  font-weight: bold;
+  color: #16a085;
+  font-size: 1.2em;
+}
+.estado-pendiente { background: #c0392b; color: white; }
+.estado-preparando { background: #f1c40f; color: black; }
+.estado-entregado { background: #27ae60; color: white; }
