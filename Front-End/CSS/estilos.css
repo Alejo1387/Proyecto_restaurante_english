@@ -81,13 +81,6 @@
   z-index: 1;
 }
 
-#mains2 {
-  position: fixed;
-  top: 30%;
-  left: 40%;
-  z-index: 10;
-}
-
 #menuDish {
     margin: 10px;
     margin-bottom: 100px;
@@ -124,7 +117,14 @@
     width: 65px;
 }
 
-/* Mostrar el Menu */
+/* Mostrar el Menu
+#mains2 {
+  position: fixed;
+  top: 30%;
+  left: 40%;
+  z-index: 10;
+}
+
 #menuLateral {
     background-color: rgba(12, 53, 75, 0.97);
     padding: 100px;
@@ -147,7 +147,153 @@
 }
 #menuLateral #espList {
     margin: 10px;
+} */
+
+/* Contenedor principal del modal */
+#mains2 {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  pointer-events: none; /* Permite clicks en el fondo */
 }
+
+/* Panel del menú */
+#menuLateral {
+  background-color: rgba(12, 53, 75, 0.97);
+  padding: 40px;
+  border-radius: 10px;
+  position: relative;
+  max-width: 90vw; /* Se adapta en móviles */
+  width: 500px; /* Ancho fijo en pantallas grandes */
+  max-height: 80vh; /* No se sale de la pantalla */
+  overflow-y: auto; /* Scroll si el contenido es muy largo */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  pointer-events: all; /* El menú sí recibe clicks */
+}
+
+/* Lista del menú */
+#menuLateral #lista {
+  display: block;
+  list-style: none;
+  color: white;
+  padding: 0;
+  margin: 0;
+}
+
+/* Botón de cerrar */
+#menuLateral #cerrarBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 40px;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, color 0.2s;
+}
+
+#menuLateral #cerrarBtn:hover {
+  transform: scale(1.1);
+  color: #ff6b6b;
+}
+
+/* Elementos de la lista */
+#menuLateral #espList {
+  margin: 20px 0;
+  cursor: pointer;
+  transition: color 0.3s, transform 0.2s;
+  font-size: 1.5rem;
+}
+
+#menuLateral #espList:hover {
+  color: #4a9eff;
+  transform: translateX(10px);
+}
+
+/* Clase para ocultar el modal */
+.oculto {
+  display: none !important;
+}
+
+/* ===== MEDIA QUERIES ===== */
+
+/* Tablets (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+  #menuLateral {
+    width: 450px;
+    padding: 35px;
+  }
+  
+  #menuLateral #espList {
+    font-size: 1.3rem;
+  }
+}
+
+/* Móviles grandes (480px - 767px) */
+@media screen and (max-width: 767px) {
+  #menuLateral {
+    width: 85vw;
+    padding: 30px 20px;
+  }
+  
+  #menuLateral #cerrarBtn {
+    font-size: 35px;
+    width: 45px;
+    height: 45px;
+  }
+  
+  #menuLateral #espList {
+    font-size: 1.2rem;
+    margin: 15px 0;
+  }
+}
+
+/* Móviles pequeños (menos de 480px) */
+@media screen and (max-width: 480px) {
+  #menuLateral {
+    width: 90vw;
+    padding: 25px 15px;
+  }
+  
+  #menuLateral #cerrarBtn {
+    font-size: 30px;
+    width: 40px;
+    height: 40px;
+    top: 5px;
+    right: 5px;
+  }
+  
+  #menuLateral #espList {
+    font-size: 1.1rem;
+    margin: 12px 0;
+  }
+}
+
+/* Móviles muy pequeños (menos de 360px) */
+@media screen and (max-width: 360px) {
+  #menuLateral {
+    width: 95vw;
+    padding: 20px 10px;
+  }
+  
+  #menuLateral #espList {
+    font-size: 1rem;
+    margin: 10px 0;
+  }
+}
+
+
+
+
 
 /* Panel Mains */
 #mains {

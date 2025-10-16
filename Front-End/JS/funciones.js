@@ -366,6 +366,8 @@ function confirmarPedido(numeroPedido, id_pedido) {
     });
 }
 
+// //////////
+
 function cargarPedidosHoyTodos() {
   const fecha = new Date().toISOString().split('T')[0];
   const form = new FormData();
@@ -376,19 +378,19 @@ function cargarPedidosHoyTodos() {
     method: 'POST',
     body: form
   })
-  .then(res => res.json())
-  .then(data => {
-    if (!data.success) {
-      console.error(data.error || 'Error al obtener datos');
-      document.getElementById('pedidosContainer').innerHTML = '<p>Error al cargar pedidos.</p>';
-      return;
-    }
-    renderTarjetasUsuarios(data.usuarios);
-  })
-  .catch(err => {
-    console.error('Fetch error:', err);
-    document.getElementById('pedidosContainer').innerHTML = '<p>Error de conexión.</p>';
-  });
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        console.error(data.error || 'Error al obtener datos');
+        document.getElementById('pedidosContainer').innerHTML = '<p>Error al cargar pedidos.</p>';
+        return;
+      }
+      renderTarjetasUsuarios(data.usuarios);
+    })
+    .catch(err => {
+      console.error('Fetch error:', err);
+      document.getElementById('pedidosContainer').innerHTML = '<p>Error de conexión.</p>';
+    });
 }
 
 function formatoPesos(n) {
@@ -398,7 +400,6 @@ function formatoPesos(n) {
 function renderTarjetasUsuarios(usuarios) {
   const contPendientes = document.getElementById('pedidosContainer');
   const contEntregados = document.getElementById('pedidosEntregados');
-
   contPendientes.innerHTML = '';
   contEntregados.innerHTML = '';
 
@@ -407,7 +408,33 @@ function renderTarjetasUsuarios(usuarios) {
     return;
   }
 
+  const tipoDescuento = localStorage.getItem("tipoDescuento"); // 'Si' o 'No'
+
   usuarios.forEach(u => {
+    // Calcular total y descuento
+    let total = u.total;
+    let descuentoPorcentaje = 0;
+
+    if (tipoDescuento === "Si") {
+      descuentoPorcentaje = 20;
+    } else if (tipoDescuento === "No" && total > 127) {
+      descuentoPorcentaje = 25;
+    }
+
+    const descuentoValor = (total * descuentoPorcentaje) / 100;
+    const totalFinal = total - descuentoValor;
+
+    // Calcular burritos gratis (3 gratis por cada 10 burritos)
+    let totalBurritos = 0;
+    u.pedidos.forEach(p => {
+      if (p.nombre_producto.toLowerCase().includes('burrito')) {
+        totalBurritos += p.cantidad;
+      }
+    });
+
+    const burritosGratis = Math.floor(totalBurritos / 10) * 3;
+
+    // Crear tarjeta
     const card = document.createElement('div');
     card.className = 'tarjetaUsuario';
 
@@ -415,17 +442,21 @@ function renderTarjetasUsuarios(usuarios) {
       <div class="headerUsuario">
         <h3>${u.nombre_usuario}</h3>
         <span class="mesa">Mesa ${u.mesa}</span>
-        <span class="totalUsuario">Total: $${formatoPesos(u.total)}</span>
       </div>
       <div class="listaProductos">
     `;
 
+    // Productos
     u.pedidos.forEach(p => {
-      // Asignar color segun estado
-      const claseColor =
-        p.proceso === 'Pendiente' ? 'estado-pendiente' :
-        p.proceso === 'Preparando' ? 'estado-preparando' :
-        'estado-entregado';
+      const colorFondo =
+        p.proceso === "Pendiente" ? "red" :
+        p.proceso === "Preparando" ? "yellow" :
+        p.proceso === "Entregado" ? "green" : "gray";
+
+      const colorTexto =
+        p.proceso === "Pendiente" ? "white" :
+        p.proceso === "Preparando" ? "black" :
+        p.proceso === "Entregado" ? "white" : "white";
 
       html += `
         <div class="itemProducto">
@@ -436,32 +467,41 @@ function renderTarjetasUsuarios(usuarios) {
           </div>
           <div class="productoInfo">
             <small>${p.categoria} · ${p.ingrediente || ''}</small>
-            <select class="estadoSelect ${claseColor}" data-id="${p.id_pedido}">
-              <option value="Pendiente" ${p.proceso === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
-              <option value="Preparando" ${p.proceso === 'Preparando' ? 'selected' : ''}>Preparando</option>
-              <option value="Entregado" ${p.proceso === 'Entregado' ? 'selected' : ''}>Entregado</option>
+            <select class="selectEstado" data-id="${p.id_pedido}" style="background:${colorFondo};color:${colorTexto};border:none;border-radius:5px;padding:4px;">
+              <option value="Pendiente" ${p.proceso === "Pendiente" ? "selected" : ""}>Pendiente</option>
+              <option value="Preparando" ${p.proceso === "Preparando" ? "selected" : ""}>Preparando</option>
+              <option value="Entregado" ${p.proceso === "Entregado" ? "selected" : ""}>Entregado</option>
             </select>
           </div>
         </div>
       `;
     });
 
-    html += `</div>`;
+    html += `
+      </div>
+      <div class="totalUsuario">
+        <p><b>Total:</b> $${formatoPesos(total)}</p>
+        <p><b>Descuento aplicado:</b> ${descuentoPorcentaje > 0 ? descuentoPorcentaje + '%' : 'Ninguno'}</p>
+        <p><b>Total a pagar:</b> $${formatoPesos(totalFinal)}</p>
+        ${burritosGratis > 0 ? `<p style="color:#0a7a3f;font-weight:bold;">🎁 Burritos gratis: ${burritosGratis}</p>` : ''}
+      </div>
+    `;
+
     card.innerHTML = html;
 
-    // Verificar si el usuario tiene algún pedido Entregado
-    const todosEntregados = u.pedidos.every(p => p.proceso === 'Entregado');
-    if (todosEntregados) {
+    // Si todos los pedidos del usuario están entregados → mover a "Entregados"
+    const esEntregado = u.pedidos.every(p => p.proceso === "Entregado");
+    if (esEntregado) {
       contEntregados.appendChild(card);
     } else {
       contPendientes.appendChild(card);
     }
   });
 
-  // Escuchar cambios de estado
-  document.querySelectorAll('.estadoSelect').forEach(select => {
-    select.addEventListener('change', e => {
-      const idPedido = e.target.getAttribute('data-id');
+  // Eventos de cambio para los select
+  document.querySelectorAll('.selectEstado').forEach(select => {
+    select.addEventListener('change', (e) => {
+      const idPedido = e.target.dataset.id;
       const nuevoEstado = e.target.value;
       actualizarEstadoPedido(idPedido, nuevoEstado);
     });
@@ -478,23 +518,13 @@ function actualizarEstadoPedido(idPedido, nuevoEstado) {
     method: 'POST',
     body: form
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      console.log(`✅ Pedido ${idPedido} actualizado a ${nuevoEstado}`);
-      cargarPedidosHoyTodos(); // refrescar todo para mover a entregados si aplica
-    } else {
-      console.error('❌ Error al actualizar estado:', data.error);
-    }
-  })
-  .catch(err => console.error('❌ Error en fetch:', err));
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        cargarPedidosHoyTodos(); // refresca todo
+      } else {
+        alert('Error al actualizar el estado del pedido');
+      }
+    })
+    .catch(err => console.error('Error al actualizar estado:', err));
 }
-
-
-// Cuando cargue la página de cliente.html
-// document.addEventListener('DOMContentLoaded', () => {
-//     mainBuyDish();
-//     cargarProductos('Main-dishes');
-//     mainMenuDish();
-//     cargarPedidosHoyTodos();
-// });

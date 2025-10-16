@@ -95,7 +95,7 @@
                 }
                 $response["errores"][] = "";
                 break;
-            
+
             case 'agregarCarrito':
                 $id_producto = $_POST["id_producto"];
                 $cedula = $_POST["cedula"];
@@ -114,7 +114,7 @@
                     echo json_encode($response);
                 }
                 break;
-            
+
             case 'carrito':
                 $cedula = $_POST["cedula"];
                 try {
@@ -128,7 +128,7 @@
                     echo json_encode($response);
                 }
                 break;
-            
+
             case 'eliminarPedido':
                 $id = $_POST["id_pedido"];
                 try {
@@ -159,13 +159,14 @@
 
             case 'obtenerPedidosHoyPorTodos':
                 $fecha = $_POST['fecha'] ?? null;
+                // $fecha = '2025-10-15';
                 if (!$fecha) {
                     echo json_encode(['success' => false, 'error' => 'Falta fecha.']);
                     break;
                 }
 
                 try {
-                    $sql = "SELECT 
+                    $sql = "SELECT
                                 u.cedula,
                                 u.nombre AS nombre_usuario,
                                 u.mesa,
