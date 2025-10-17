@@ -1,3 +1,5 @@
+<!-- ==================== This code was made by me ==================== -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -75,9 +77,39 @@
     <script src="../JS/funciones.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            mainBuyDish();
+            // mainBuyDish();
             cargarProductos('Main-dishes');
-            mainMenuDish();
+            // mainMenuDish();
+
+            const panelOpt = localStorage.getItem('panelOpt');
+            const panel = localStorage.getItem('panel');
+
+            if (panelOpt === 'mainMenuDish' || panelOpt === '') {
+                mainMenuDish();
+                switch (panel) {
+                    case 'mainMenuDish':
+                        mainMenuDish();
+                        break;
+                    case 'mainBuyDish':
+                        mainBuyDish();
+                        break;
+                    case 'mostrarMainDishes':
+                        mostrarMainDishes();
+                        break;
+                    case 'mostrarSideDisshes':
+                        mostrarSideDisshes();
+                        break;
+                    case 'mostrarDrinks':
+                        mostrarDrinks();
+                        break;
+                    case 'mostrarDesserts':
+                        mostrarDesserts();
+                        break;
+                }
+            } else {
+                mainBuyDish();
+            }
+
         })
     </script>
 </body>

@@ -1,3 +1,5 @@
+<!-- ==================== This code was made by me ==================== -->
+
 <?php
     ob_clean();
     header("Content-Type: application/json");

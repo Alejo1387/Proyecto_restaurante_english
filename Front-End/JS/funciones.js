@@ -1,3 +1,4 @@
+// ==================== This code was made by me ====================
 // fUNCION DE INICIAR SESION
 function iniciarSesion() {
     const nombre = document.getElementById('loginNombre').value;
@@ -42,19 +43,22 @@ function iniciarSesion() {
 
 }
 
-
+// ==================== This code was made by me ====================
 // Funcion para pasar de main a otro en cliente
 
 // Mostrar main menuDish
 function mainMenuDish() {
     document.getElementById('buyDish').style.display = 'none';
     document.getElementById('menuDish').style.display = 'grid';
+    localStorage.setItem('panelOpt', 'mainMenuDish');
 }
 
+// ==================== This code was made by me ====================
 // Mostrar main buyDish
 function mainBuyDish() {
-    document.getElementById('buyDish').style.display = 'flex';
+    document.getElementById('buyDish').style.display = 'grid';
     document.getElementById('menuDish').style.display = 'none';
+    localStorage.setItem('panelOpt', 'mainBuyDish');
 
     const cedula = localStorage.getItem("cedula");
 
@@ -76,11 +80,13 @@ function mainBuyDish() {
     });
 }
 
+// ==================== This code was made by me ====================
 // Mostrar MENU
 function abrirModal() {
     document.getElementById('menuLateral').classList.remove('oculto');
     document.getElementById('mains').classList.add('panel-opaco');
 }
+// ==================== This code was made by me ====================
 // Ocultar menu
 function cerrarModal() {
     document.getElementById('menuLateral').classList.add('oculto');
@@ -90,48 +96,56 @@ function cerrarModal() {
 
 // =============== Funciones de Main comidas ===============
 
+// ==================== This code was made by me ====================
 // Function mostrar Main-dishes
 function mostrarMainDishes() {
     document.getElementById('Main-dishes').classList.remove('oculto');
     document.getElementById('Side-Disshes').classList.add('oculto');
     document.getElementById('Drinks').classList.add('oculto');
     document.getElementById('Desserts').classList.add('oculto');
+    localStorage.setItem('panel', 'mostrarMainDishes');
 
     cerrarModal();
     mainMenuDish();
     cargarProductos('Main-dishes');
 }
 
+// ==================== This code was made by me ====================
 // Funcion mostrar Side-Disshes
 function mostrarSideDisshes() {
     document.getElementById('Main-dishes').classList.add('oculto');
     document.getElementById('Side-Disshes').classList.remove('oculto');
     document.getElementById('Drinks').classList.add('oculto');
     document.getElementById('Desserts').classList.add('oculto');
+    localStorage.setItem('panel', 'mostrarSideDisshes');
 
     cerrarModal();
     mainMenuDish();
     cargarProductos('Side-Disshes');
 }
 
+// ==================== This code was made by me ====================
 // Function mostrar Drinks
 function mostrarDrinks() {
     document.getElementById('Main-dishes').classList.add('oculto');
     document.getElementById('Side-Disshes').classList.add('oculto');
     document.getElementById('Drinks').classList.remove('oculto');
     document.getElementById('Desserts').classList.add('oculto');
+    localStorage.setItem('panel', 'mostrarDrinks');
 
     cerrarModal();
     mainMenuDish();
     cargarProductos('Drinks');
 }
 
+// ==================== This code was made by me ====================
 // Function mostrar Desserts
 function mostrarDesserts() {
     document.getElementById('Main-dishes').classList.add('oculto');
     document.getElementById('Side-Disshes').classList.add('oculto');
     document.getElementById('Drinks').classList.add('oculto');
     document.getElementById('Desserts').classList.remove('oculto');
+    localStorage.setItem('panel', 'mostrarDesserts');
 
     cerrarModal();
     mainMenuDish();
@@ -143,6 +157,7 @@ function mostrarDesserts() {
 
 // ============================== Funciones para mostrar las comidas y añadir al carrito ==============================
 
+// ==================== This code was made by me ====================
 // Para cargar las categorias
 function cargarProductos(categoria) {
     const formdata = new FormData();
@@ -169,6 +184,7 @@ function cargarProductos(categoria) {
     });
 }
 
+// Chatgpt help me
 function mostrarTarjetas(productos, contenedorF) {
     let contenedor = null;
 
@@ -188,18 +204,32 @@ function mostrarTarjetas(productos, contenedorF) {
         const tarjeta = document.createElement('div');
         tarjeta.classList.add('tarjeta');
 
-        tarjeta.innerHTML = `
-            <img src="../IMG/${prod.foto}" alt="${prod.nombre}" class="imgProducto">
-            <h2>${prod.nombre}</h2>
-            <p>${prod.descripcion}</p>
-            <p><strong>$${prod.precio}</strong></p>
-            <div class="cantidad">
-                <button class="btnMenos">-</button>
-                <span class="numCant">1</span>
-                <button class="btnMas">+</button>
-            </div>
-            <button class="btnAgregar">Añadir al carrito</button>
-        `;
+        if (prod.ingrediente ?? "") {
+            tarjeta.innerHTML = `
+                <img src="../IMG/${prod.foto}" alt="${prod.nombre}" class="imgProducto">
+                <h2>${prod.nombre}</h2>
+                <p>${prod.ingrediente}</p>
+                <p><strong>$${prod.precio}</strong></p>
+                <div class="cantidad">
+                    <button class="btnMenos">-</button>
+                    <span class="numCant">1</span>
+                    <button class="btnMas">+</button>
+                </div>
+                <button class="btnAgregar">Añadir al carrito</button>
+            `;
+        } else {
+            tarjeta.innerHTML = `
+                <img src="../IMG/${prod.foto}" alt="${prod.nombre}" class="imgProducto">
+                <h2>${prod.nombre}</h2>
+                <p><strong>$${prod.precio}</strong></p>
+                <div class="cantidad">
+                    <button class="btnMenos">-</button>
+                    <span class="numCant">1</span>
+                    <button class="btnMas">+</button>
+                </div>
+                <button class="btnAgregar">Añadir al carrito</button>
+            `;
+        }
 
         // lógica cantidad
         let numCant = tarjeta.querySelector('.numCant');
@@ -221,6 +251,7 @@ function mostrarTarjetas(productos, contenedorF) {
     });
 }
 
+// ==================== This code was made by me ====================
 function insertarPedido(id_producto, cantidad, productos, contenedorF) {
     const cedula = localStorage.getItem("cedula");
 
@@ -245,6 +276,7 @@ function insertarPedido(id_producto, cantidad, productos, contenedorF) {
     });
 }
 
+// Chatgpt help me
 function mostrarCarrito(productos) {
     const contenedor = document.getElementById("buyDish");
     contenedor.innerHTML = '';
@@ -325,6 +357,7 @@ function mostrarCarrito(productos) {
     })
 }
 
+// ==================== This code was made by me ====================
 function eliminarPedido(id_pedido) {
     const formdata = new FormData();
     formdata.append('funcion', 'eliminarPedido');
@@ -345,6 +378,7 @@ function eliminarPedido(id_pedido) {
     });
 }
 
+// ==================== This code was made by me ====================
 function confirmarPedido(numeroPedido, id_pedido) {
     const formdata = new FormData();
     formdata.append('funcion', 'confirmarPedido');
@@ -366,8 +400,7 @@ function confirmarPedido(numeroPedido, id_pedido) {
     });
 }
 
-// //////////
-
+// ==================== This code was made by me ====================
 function cargarPedidosHoyTodos() {
   const fecha = new Date().toISOString().split('T')[0];
   const form = new FormData();
@@ -393,6 +426,7 @@ function cargarPedidosHoyTodos() {
     });
 }
 
+// Chagpt help me
 function formatoPesos(n) {
   return Number(n).toLocaleString('es-CO');
 }
@@ -508,6 +542,7 @@ function renderTarjetasUsuarios(usuarios) {
   });
 }
 
+// ==================== This code was made by me ====================
 function actualizarEstadoPedido(idPedido, nuevoEstado) {
   const form = new FormData();
   form.append('funcion', 'actualizarEstadoPedido');

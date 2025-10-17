@@ -1,3 +1,5 @@
+// ==================== This code was made by me ====================
+
 document.addEventListener("DOMContentLoaded", function() {
     const cedula = localStorage.getItem("cedula");
     const descuento = localStorage.getItem("tipoDescuento");
