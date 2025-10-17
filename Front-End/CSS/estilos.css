@@ -388,6 +388,12 @@
 
 #buyDish .tarjeta {
     margin: 25px;
+    margin-bottom: 50px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+.espac {
+    margin-bottom: 80px;
 }
 
 .tarjeta:hover {
